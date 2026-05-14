@@ -5,9 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Missed - Tac - Toe</title>
     <link rel="stylesheet" href="style.css">
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+    <link rel="shortcut icon" href="/images/favicon.ico">
+
+    <!-- Primary Meta Tags -->
+    <meta name="title" content="MissedtacToe | The Infinite Tic-Tac-Toe Strategy Game">
+    <meta name="description" content="Play MissedtacToe, a strategic, infinite twist on classic Tic-Tac-Toe. Play against an Expert AI on a 3x3 or 5x5 board where your oldest pieces fade away!">
+    <meta name="keywords" content="tic tac toe, browser game, infinite tic tac toe, strategy game, web game, missedtactoe, puzzle game">
+    <meta name="author" content="Raducu-Alin Stratu">
+    
+    <!-- Canonical URL to resolve the www vs non-www duplicate content issue -->
+    <link rel="canonical" href="https://missedtactoe.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://missedtactoe.com/">
+    <meta property="og:title" content="MissedtacToe | The Infinite Tic-Tac-Toe Strategy Game">
+    <meta property="og:description" content="Play MissedtacToe, a strategic, infinite twist on classic Tic-Tac-Toe. Play against an Expert AI on a 3x3 or 5x5 board where your oldest pieces fade away!">
+    <meta property="og:image" content="https://missedtactoe.com/preview-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://missedtactoe.com/">
+    <meta property="twitter:title" content="MissedtacToe | The Infinite Tic-Tac-Toe Strategy Game">
+    <meta property="twitter:description" content="Play MissedtacToe, a strategic, infinite twist on classic Tic-Tac-Toe. Play against an Expert AI on a 3x3 or 5x5 board where your oldest pieces fade away!">
+    <meta property="twitter:image" content="https://missedtactoe.com/preview-image.jpg">
+
 </head>
 <body>
 
+    <!-- Top Navigation Bar -->
+    <nav class="navbar">
+        <a href="/" class="nav-brand">
+            <img src="/images/logo.png" alt="MissedtacToe Logo" class="nav-logo">
+        </a>
+        <ul class="nav-links">
+            <li><a href="/" class="active">Play</a></li>
+            <li><a href="/about.html">About</a></li>
+        </ul>
+    </nav>
+    <main class="main-content">
     <h1>Missed - Tac - Toe</h1>
     <p id="rules-text">3 pieces max. 3 in a row wins. Watch out for the fading pieces!</p>
 
@@ -34,7 +74,7 @@
     </div>
 
     <button id="restart">Restart Game</button>
-
+    
     <script>
         const boardElement = document.getElementById('board');
         const statusText = document.getElementById('status');
@@ -265,5 +305,17 @@
         // Initialize the first game on page load
         initGame();
     </script>
+</main>
+    <footer class="footer">
+        <div class="footer-links">
+            <a href="/about.html">About us</a>
+            <a href="mailto:contact@image-cut.com">Contact Us</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2026 MissedTacToe. All rights reserved.
+        </div>
+    </footer>
+
 </body>
+
 </html>

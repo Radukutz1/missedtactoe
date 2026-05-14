@@ -22,6 +22,94 @@
     --font-size: 4rem;
 }
 
+/* =========================================
+   TOP NAVIGATION BAR
+   ========================================= */
+.navbar {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background: rgba(15, 5, 24, 0.75); /* Darker frosted base */
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+    box-sizing: border-box;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+
+.nav-logo {
+    height: 60px;
+    width: auto;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 35px;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Neon hover effect for links */
+.nav-links a:hover, .nav-links a.active {
+    color: var(--x-color);
+    text-shadow: var(--x-glow);
+}
+
+/* Animated underline on hover */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -6px;
+    left: 0;
+    background-color: var(--x-color);
+    box-shadow: var(--x-glow);
+    transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.nav-links a:hover::after, .nav-links a.active::after {
+    width: 100%;
+}
+
+/* Mobile Responsiveness for Navbar */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 15px 20px;
+    }
+    
+    .nav-links {
+        gap: 15px;
+    }
+    
+    .nav-links a {
+        font-size: 0.9rem;
+    }
+    
+    .nav-brand span {
+        display: none; /* Hides the text on phones to save space, relies on logo if present */
+    }
+}
+
 body {
     font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
     background: var(--bg-gradient);
@@ -30,13 +118,23 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* <-- CHANGE THIS FROM center */
     min-height: 100vh;
     margin: 0;
+    padding: 100px 0 0; /* Adjusted padding since main/footer handle the rest */
+    box-sizing: border-box;
+}
+/* Container that holds the game perfectly in the middle */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1; /* This tells it to fill all empty space between the nav and footer */
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
 }
-
 h1 {
     font-size: clamp(2.5rem, 5vw, 4rem);
     margin-bottom: 0.2rem;
@@ -196,4 +294,136 @@ select option {
 
 #restart:active {
     transform: translateY(0);
+}
+
+/* =========================================
+   FOOTER
+   ========================================= */
+.footer {
+    width: 100%;
+    margin-top: auto; /* Pushes the footer to the bottom of the screen */
+    padding: 20px 50px;
+    background: rgba(15, 5, 24, 0.4); /* Dark, subtle frosted glass */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+}
+
+.footer-links {
+    display: flex;
+    gap: 30px;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Neon cyan hover effect to match the navigation */
+.footer-links a:hover {
+    color: var(--x-color);
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+}
+
+.footer-copy {
+    color: rgba(179, 157, 219, 0.4); /* Faded text-muted */
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
+
+/* =========================================
+   ABOUT PAGE STYLES
+   ========================================= */
+.about-container {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.glass-card {
+    background: var(--glass-bg);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--glass-border);
+    margin-top: 20px;
+    text-align: left;
+}
+
+.about-card h2 {
+    color: var(--x-color);
+    font-size: 1.5rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+}
+
+.about-card h2:first-child {
+    margin-top: 0;
+}
+
+.about-card p {
+    text-align: left;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+}
+
+.about-card strong {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.btn-primary {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 12px 32px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    background: linear-gradient(135deg, #7b2cbf 0%, #531c82 100%);
+    color: white;
+    border: 1px solid var(--glass-border);
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(123, 44, 191, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #9d4edd 0%, #7b2cbf 100%);
+    box-shadow: 0 8px 25px rgba(123, 44, 191, 0.5);
+    color: white; /* Prevents text from turning cyan due to generic 'a' hover states */
+}
+
+/* Mobile Responsiveness for Footer */
+@media (max-width: 768px) {
+    .footer {
+        padding: 20px;
+    }
+    
+    .footer-links {
+        gap: 20px;
+    }
 }
