@@ -77,9 +77,23 @@
             </select>
         </div>
     </div>
+    <div class="controls">
+        </div>
+
+    <div class="scoreboard">
+        <div class="score-card">
+            <span class="score-label">You</span>
+            <span id="user-score-val" class="score-number">0</span>
+        </div>
+        <div class="score-card">
+            <span class="score-label">Computer</span>
+            <span id="ai-score-val" class="score-number">0</span>
+        </div>
+        <button id="reset-score" title="Reset Scores">⟳</button>
+    </div>
 
     <div id="status">Your turn (X)</div>
-
+    
     <div id="board">
     </div>
 
@@ -93,6 +107,29 @@
         const gridSizeSelect = document.getElementById('gridSize');
         const rulesText = document.getElementById('rules-text');
         const rootStyles = document.documentElement.style;
+
+        const userScoreEl = document.getElementById('user-score-val');
+        const aiScoreEl = document.getElementById('ai-score-val');
+        const resetScoreBtn = document.getElementById('reset-score');
+
+        // Load scores from LocalStorage (or default to 0)
+        let userScore = parseInt(localStorage.getItem('missedTacToeUser')) || 0;
+        let aiScore = parseInt(localStorage.getItem('missedTacToeAi')) || 0;
+
+        function updateScoreDisplay() {
+            userScoreEl.innerText = userScore;
+            aiScoreEl.innerText = aiScore;
+        }
+
+        resetScoreBtn.addEventListener('click', () => {
+            userScore = 0;
+            aiScore = 0;
+            localStorage.setItem('missedTacToeUser', 0);
+            localStorage.setItem('missedTacToeAi', 0);
+            updateScoreDisplay();
+        });
+
+        updateScoreDisplay(); // Call it once to load initial values
 
         // Game Configuration Variables
         let size = 3;
@@ -323,8 +360,19 @@
             }
 
             if (roundWon) {
-                statusText.innerText = player === userSymbol ? "You Win!" : "Computer Wins!";
-                statusText.style.color = player === 'X' ? "var(--x-color)" : "var(--o-color)";
+                if (player === userSymbol) {
+                    statusText.innerText = "You Win!";
+                    statusText.style.color = userSymbol === 'X' ? "var(--x-color)" : "var(--o-color)";
+                    userScore++;
+                    localStorage.setItem('missedTacToeUser', userScore);
+                } else {
+                    statusText.innerText = "Computer Wins!";
+                    statusText.style.color = aiSymbol === 'X' ? "var(--x-color)" : "var(--o-color)";
+                    aiScore++;
+                    localStorage.setItem('missedTacToeAi', aiScore);
+                }
+                
+                updateScoreDisplay();
                 gameActive = false;
                 
                 const cells = document.querySelectorAll('.cell');
