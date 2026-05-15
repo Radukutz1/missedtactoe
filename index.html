@@ -104,12 +104,17 @@
         let queueO = [];
         let winConditions = [];
 
+        // Track symbols to alternate turns
+        let userSymbol = 'X';
+        let aiSymbol = 'O';
+        let currentPlayer = 'X'; // 'X' always starts the game mathematically
+
         // Listeners for settings
-        restartBtn.addEventListener('click', initGame);
-        difficultySelect.addEventListener('change', initGame);
+        // Pass "true" to the restart button so it knows to swap symbols
+        restartBtn.addEventListener('click', () => initGame(true));
+        difficultySelect.addEventListener('change', () => initGame(false));
         gridSizeSelect.addEventListener('change', () => {
             size = parseInt(gridSizeSelect.value);
-            // 3x3 needs 3 in a row (3 max). 5x5 needs 4 in a row (4 max).
             if (size === 3) {
                 winReq = 3;
                 maxPieces = 3;
@@ -119,18 +124,15 @@
             } else {
                 winReq = 4;
                 maxPieces = 4;
-                // Scale down visually for larger board
                 rootStyles.setProperty('--cell-size', '60px');
                 rootStyles.setProperty('--font-size', '2.5rem');
                 rulesText.innerText = "5x5 Mode: 4 pieces max. 4 in a row wins. Oldest piece fades away!";
             }
-            initGame();
+            initGame(false);
         });
 
-        // Generate dynamic win lines based on board size and win requirement
         function generateWinConditions() {
             let conditions = [];
-            // Rows
             for (let r = 0; r < size; r++) {
                 for (let c = 0; c <= size - winReq; c++) {
                     let row = [];
@@ -138,7 +140,6 @@
                     conditions.push(row);
                 }
             }
-            // Columns
             for (let c = 0; c < size; c++) {
                 for (let r = 0; r <= size - winReq; r++) {
                     let col = [];
@@ -146,7 +147,6 @@
                     conditions.push(col);
                 }
             }
-            // Diagonals (Top-Left to Bottom-Right)
             for (let r = 0; r <= size - winReq; r++) {
                 for (let c = 0; c <= size - winReq; c++) {
                     let diag = [];
@@ -154,7 +154,6 @@
                     conditions.push(diag);
                 }
             }
-            // Diagonals (Top-Right to Bottom-Left)
             for (let r = 0; r <= size - winReq; r++) {
                 for (let c = winReq - 1; c < size; c++) {
                     let diag = [];
@@ -165,17 +164,26 @@
             return conditions;
         }
 
-        function initGame() {
+        function initGame(swapSymbols = false) {
+            if (swapSymbols) {
+                userSymbol = userSymbol === 'X' ? 'O' : 'X';
+                aiSymbol = userSymbol === 'X' ? 'O' : 'X';
+            }
+
+            currentPlayer = 'X'; // X always makes the first move on a new board
             board = Array(size * size).fill('');
             queueX = [];
             queueO = [];
             gameActive = true;
             winConditions = generateWinConditions();
 
-            statusText.innerText = "Your turn (X)";
+            if (currentPlayer === userSymbol) {
+                statusText.innerText = `Your turn (${userSymbol})`;
+            } else {
+                statusText.innerText = "Computer is thinking...";
+            }
             statusText.style.color = "var(--text-main)";
 
-            // Build dynamic UI grid
             boardElement.style.gridTemplateColumns = `repeat(${size}, var(--cell-size))`;
             boardElement.innerHTML = '';
             
@@ -186,16 +194,23 @@
                 cell.addEventListener('click', handleCellClick);
                 boardElement.appendChild(cell);
             }
+
+            // If the computer is 'X', it takes the first turn automatically
+            if (currentPlayer === aiSymbol) {
+                setTimeout(computerTurn, 600);
+            }
         }
 
         function handleCellClick(e) {
             const index = parseInt(e.target.getAttribute('data-index'));
 
-            if (board[index] !== '' || !gameActive) return;
+            // Prevent clicks if the game is over, the cell is full, or it's not the user's turn
+            if (board[index] !== '' || !gameActive || currentPlayer !== userSymbol) return;
 
-            makeMove(index, 'X');
+            makeMove(index, userSymbol);
             
             if (gameActive) {
+                currentPlayer = aiSymbol;
                 statusText.innerText = "Computer is thinking...";
                 setTimeout(computerTurn, 600); 
             }
@@ -207,7 +222,6 @@
             
             currentQueue.push(index);
 
-            // Dynamically check against the max piece limit
             if (currentQueue.length > maxPieces) {
                 const oldestIndex = currentQueue.shift();
                 board[oldestIndex] = ''; 
@@ -232,14 +246,17 @@
                 return winConditions.some(combo => combo.every(idx => tempBoard[idx] === player));
             }
 
+            const aiQueue = aiSymbol === 'X' ? queueX : queueO;
+            const userQueue = userSymbol === 'X' ? queueX : queueO;
+
             // 1. Can AI Win immediately?
             for (let i of emptyCells) {
-                if (checkSimWin(simulateMove(i, 'O', board, queueO), 'O')) return i;
+                if (checkSimWin(simulateMove(i, aiSymbol, board, aiQueue), aiSymbol)) return i;
             }
 
             // 2. Block player's immediate win
             for (let i of emptyCells) {
-                if (checkSimWin(simulateMove(i, 'X', board, queueX), 'X')) return i;
+                if (checkSimWin(simulateMove(i, userSymbol, board, userQueue), userSymbol)) return i;
             }
 
             // 3. Take the center (Dynamic based on board size)
@@ -258,7 +275,7 @@
         }
 
         function computerTurn() {
-            if (!gameActive) return;
+            if (!gameActive || currentPlayer !== aiSymbol) return;
 
             let emptyCells = [];
             for (let i = 0; i < board.length; i++) {
@@ -274,9 +291,12 @@
                 bestMove = emptyCells[Math.floor(Math.random() * emptyCells.length)];
             }
 
-            if (bestMove !== undefined) makeMove(bestMove, 'O');
+            if (bestMove !== undefined) makeMove(bestMove, aiSymbol);
             
-            if (gameActive) statusText.innerText = "Your turn (X)";
+            if (gameActive) {
+                currentPlayer = userSymbol;
+                statusText.innerText = `Your turn (${userSymbol})`;
+            }
         }
 
         function updateUI() {
@@ -303,7 +323,7 @@
             }
 
             if (roundWon) {
-                statusText.innerText = player === 'X' ? "You Win!" : "Computer Wins!";
+                statusText.innerText = player === userSymbol ? "You Win!" : "Computer Wins!";
                 statusText.style.color = player === 'X' ? "var(--x-color)" : "var(--o-color)";
                 gameActive = false;
                 
@@ -312,8 +332,8 @@
             }
         }
 
-        // Initialize the first game on page load
-        initGame();
+        // Initialize the first game on page load (false ensures the user starts game #1 as 'X')
+        initGame(false);
     </script>
 </main>
     <footer class="footer">
